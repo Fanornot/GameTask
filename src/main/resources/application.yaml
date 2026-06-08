@@ -1,25 +1,55 @@
-jwt:
-  secret: "c3VwZXItbG9uZy1zZWNyZXQta2V5LWZvci1zcHJpbmctYm9vdC1qd3QtYXV0aC1rZXk="
-  expiration: 86400000
 server:
   port: 8080
 spring:
+  application:
+    name: sks-quest-backend
   datasource:
+    url: jdbc:h2:mem:sksquest;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: password
     driver-class-name: org.h2.Driver
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: create-drop
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
-  application:
-    name: GameTask
-  spring:
-   jpa:
-    properties:
-      hibernate:
-        globally_quoted_identifiers: true
+        dialect: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: true
+  sql:
+    init:
+      mode: always
 
+jwt:
+  secret: 5e6368d1f5d21f2a4b8e9c3d7a1f0e8b4c6d9e2a5f8b1c4d7e0a3b6c9d2f5e8a1b4c7d0e3f6a9b2c5d8e1f4a7b0c3d6e9f2a5b8c1d4e7f0a3b6c9d2e5f8
+  expiration: 86400000  # 24 часа
 
+logging:
+  level:
+    com.sks.quest: INFO
+    org.springframework.security: DEBUG
 
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+
+app:
+  wheel:
+    free-spin-per-week: 1
+    paid-spin-per-day: 5
+    spin-cost: 50
+  daily:
+    freeze-cost: 100
+    base-reward: 5
+  bonus:
+    expiry-months: 12
