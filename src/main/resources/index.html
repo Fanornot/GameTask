@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>СКС Quest — Геймификация Лояльности</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="rings-container" id="sonicRings"></div>
+
+<!-- ============ ЭКРАН АВТОРИЗАЦИИ ============ -->
+<div id="authContainer" class="auth-container">
+    <div class="auth-box">
+        <h1>СКС Quest</h1>
+        <p class="subtitle">Вход в систему лояльности</p>
+
+        <div class="auth-tabs">
+            <button class="auth-tab active" onclick="switchAuthTab('login')">Вход</button>
+            <button class="auth-tab" onclick="switchAuthTab('register')">Регистрация</button>
+        </div>
+
+        <form id="loginForm" class="auth-form active">
+            <div class="form-group">
+                <label>Имя пользователя</label>
+                <input type="text" id="loginUsername" class="form-input" value="client" required>
+            </div>
+            <div class="form-group">
+                <label>Пароль</label>
+                <input type="password" id="loginPassword" class="form-input" value="client123" required>
+            </div>
+            <button type="submit" class="primary-btn">ВОЙТИ В СИСТЕМУ</button>
+        </form>
+
+        <form id="registerForm" class="auth-form">
+            <div class="form-group">
+                <label>Имя пользователя</label>
+                <input type="text" id="regUsername" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="regEmail" class="form-input" required>
+            </div>
+            <div class="form-group">
+                <label>Пароль</label>
+                <input type="password" id="regPassword" class="form-input" required>
+            </div>
+            <div class="form-group checkbox-group">
+                <input type="checkbox" id="consent152" required>
+                <label for="consent152">Согласен на обработку персональных данных (152-ФЗ)</label>
+            </div>
+            <button type="submit" class="primary-btn">ЗАРЕГИСТРИРОВАТЬСЯ</button>
+        </form>
+    </div>
+</div>
+
+<!-- ============ ОСНОВНОЕ ПРИЛОЖЕНИЕ ============ -->
+<div id="appContainer" class="app-container" style="display: none;">
+    <header>
+        <div class="header-left">
+            <h1>СКС Quest</h1>
+            <div class="subtitle">Привет, <span id="userNameDisplay">Клиент</span>!</div>
+        </div>
+        <div class="header-right">
+            <div class="balance-badge">
+                <span>💎</span> <span id="balanceDisplay">0</span> бонусов
+            </div>
+            <select id="roleSelect" class="role-select" onchange="switchRole(this.value)">
+                <option value="CLIENT">Клиент</option>
+                <option value="MARKETING">Маркетолог</option>
+                <option value="MARKETING_ANALYST">Аналитик</option>
+                <option value="ADMIN">Админ</option>
+            </select>
+            <button class="logout-btn" onclick="logout()">Выход</button>
+        </div>
+    </header>
+
+    <nav class="nav-tabs">
+        <button class="nav-btn active" data-section="dashboard">Обзор</button>
+        <button class="nav-btn" data-section="daily">Ежедневка</button>
+        <button class="nav-btn" data-section="game">🎮 Tower Blocks</button>
+        <button class="nav-btn" data-section="wheel">Колесо Фортуны</button>
+        <button class="nav-btn" data-section="marketplace">Каталог Призов</button>
+        <button class="nav-btn" data-section="quests">Квесты</button>
+        <button class="nav-btn" data-section="achievements">Достижения</button>
+        <button class="nav-btn" data-section="leaderboard">Рейтинг</button>
+        <button class="nav-btn role-marketing" data-section="marketing" style="display:none;">Маркетинг</button>
+        <button class="nav-btn role-analyst" data-section="analytics" style="display:none;">Аналитика</button>
+    </nav>
+
+    <main>
+        <!-- DASHBOARD -->
+        <section id="dashboard" class="section active">
+            <div class="dashboard-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Баланс бонусов</div>
+                    <div class="stat-value val-gold" id="dashBalance">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Текущий стрик</div>
+                    <div class="stat-value val-fire" id="dashStreak">0 🔥</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Статус лояльности</div>
+                    <div class="stat-value val-orion" id="dashStatus">REGULAR</div>
+                </div>
+            </div>
+            <div class="promo-banner">
+                <h3>🔥 Выполняй квесты, крути колесо и получай реальные призы!</h3>
+            </div>
+        </section>
+
+        <!-- DAILY -->
+        <section id="daily" class="section">
+            <h2>Ежедневный вход</h2>
+            <p class="section-desc">Заходи каждый день. Пропуск сбрасывает серию! Заморозка: 100 бонусов.</p>
+            <div class="daily-grid" id="dailyGrid"></div>
+            <div class="daily-actions">
+                <button class="primary-btn" id="claimDailyBtn">ЗАБРАТЬ НАГРАДУ</button>
+                <button class="secondary-btn" id="buyFreezeBtn">❄️ ЗАМОРОЗИТЬ (100 бонусов)</button>
+            </div>
+        </section>
+
+        <!-- GAME -->
+        <section id="game" class="section">
+            <h2>Tower Blocks</h2>
+            <p class="section-desc">Поставь 20 блоков, чтобы выполнить ежедневный квест!</p>
+            <div class="game-wrapper">
+                <canvas id="towerCanvas" width="400" height="500"></canvas>
+                <div class="game-controls">
+                    <button class="primary-btn" id="btnStartGame">НАЧАТЬ ИГРУ</button>
+                    <button class="secondary-btn" id="btnPlaceBlock">ПОСТАВИТЬ БЛОК (Пробел)</button>
+                </div>
+                <div id="gameScore" class="game-score">Счёт: 0</div>
+            </div>
+        </section>
+
+        <!-- WHEEL -->
+        <section id="wheel" class="section">
+            <h2>🎰 Казино СКС</h2>
+            <p class="section-desc">Испытай удачу! 1 бесплатный спин в неделю. Доп. спины: 50 Орионов (макс. 5 в день).</p>
+
+            <div class="casino-wrapper">
+                <!-- Неоновая вывеска -->
+                <div class="casino-sign">
+                    <span class="neon-text">★ JACKPOT ★</span>
+                </div>
+
+                <!-- Рулетка в стиле казино -->
+                <div class="roulette-container">
+                    <div class="roulette-pointer">▼</div>
+                    <div class="roulette" id="wheelElement">
+                        <div class="roulette-segment" style="--i:0; --color:#8b0000;">10</div>
+                        <div class="roulette-segment" style="--i:1; --color:#ffd700;">20</div>
+                        <div class="roulette-segment" style="--i:2; --color:#8b0000;">30</div>
+                        <div class="roulette-segment" style="--i:3; --color:#ffd700;">50</div>
+                        <div class="roulette-segment" style="--i:4; --color:#8b0000;">100</div>
+                        <div class="roulette-segment" style="--i:5; --color:#ffd700;">200</div>
+                        <div class="roulette-segment" style="--i:6; --color:#8b0000;">500</div>
+                        <div class="roulette-segment" style="--i:7; --color:#ffd700;">1000</div>
+                        <div class="roulette-center">
+                            <div class="roulette-inner">СКС</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Статистика спинов -->
+                <div class="casino-stats">
+                    <div class="stat-mini">
+                        <div class="stat-mini-label">Бесплатных спинов</div>
+                        <div class="stat-mini-value" id="freeSpinsLeft">1/1</div>
+                    </div>
+                    <div class="stat-mini">
+                        <div class="stat-mini-label">Платных сегодня</div>
+                        <div class="stat-mini-value" id="paidSpinsToday">0/5</div>
+                    </div>
+                </div>
+
+                <!-- Кнопки -->
+                <div class="casino-actions">
+                    <button class="casino-btn jackpot-btn" id="spinFreeBtn">
+                        🎁 БЕСПЛАТНЫЙ СПИН
+                    </button>
+                    <button class="casino-btn premium-btn" id="spinPaidBtn">
+                        💫 СПИН ЗА 50 🌌
+                    </button>
+                    <button class="text-btn" id="showProbBtn">📊 Шансы выпадения (Compliance)</button>
+                </div>
+
+                <div id="probabilitiesDisplay" class="probabilities-box" style="display:none;"></div>
+            </div>
+        </section>
+
+        <!-- MARKETPLACE -->
+        <section id="marketplace" class="section">
+            <h2>Каталог Призов</h2>
+            <div class="marketplace-grid" id="marketplaceGrid"></div>
+        </section>
+
+        <!-- QUESTS -->
+        <section id="quests" class="section">
+            <h2>Биржа Квестов</h2>
+            <div class="quest-list" id="questList"></div>
+
+            <div class="constructor-panel role-marketing" style="display:none;">
+                <h3>🛠 Конструктор Квестов (Маркетинг)</h3>
+                <div class="form-row">
+                    <input type="text" id="cqName" class="form-input" placeholder="Название квеста">
+                    <select id="cqType" class="form-input">
+                        <option value="DAILY">Ежедневный</option>
+                        <option value="SEASONAL">Сезонный</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <input type="number" id="cqAmount" class="form-input" placeholder="Цель" value="1">
+                    <input type="number" id="cqReward" class="form-input" placeholder="Награда" value="50">
+                </div>
+                <button class="primary-btn" id="btnCreateQuest">ОПУБЛИКОВАТЬ КВЕСТ</button>
+            </div>
+        </section>
+
+        <!-- ACHIEVEMENTS -->
+        <section id="achievements" class="section">
+            <h2>Достижения и Бейджи</h2>
+            <div class="achievements-grid" id="achievementsGrid"></div>
+        </section>
+
+        <!-- LEADERBOARD -->
+        <section id="leaderboard" class="section">
+            <h2>Таблица Лидеров (Анонимная)</h2>
+            <div class="leaderboard-container" id="leaderboardList"></div>
+        </section>
+
+        <!-- MARKETING -->
+        <section id="marketing" class="section">
+            <h2>Панель Маркетолога</h2>
+            <div class="dashboard-grid">
+                <div class="stat-card"><div class="stat-label">Активных квестов</div><div class="stat-value">5</div></div>
+                <div class="stat-card"><div class="stat-label">Вращений колеса сегодня</div><div class="stat-value">89</div></div>
+            </div>
+        </section>
+
+        <!-- ANALYTICS -->
+        <section id="analytics" class="section">
+            <h2>Дашборд Аналитики</h2>
+            <div class="dashboard-grid" id="analyticsGrid"></div>
+        </section>
+    </main>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="game.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

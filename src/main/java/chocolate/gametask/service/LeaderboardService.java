@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import chocolate.gametask.repository.LeaderboardRepository;
-
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.List;

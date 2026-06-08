@@ -51,7 +51,4 @@ INSERT INTO quests(name, description, type, target_count, reward_amount, active,
 ('Посмотреть калькулятор займа', 'Воспользуйтесь калькулятором', 'DAILY', 1, 10, true, 'ALL'),
  ('Пригласить друга', 'Поделитесь реферальной ссылкой', 'SEASONAL', 1, 200, true, 'ALL'),
 ('Новогодний квест', 'Выполните 5 заданий за декабрь', 'SEASONAL', 5, 500, true, 'ALL');
-INSERT INTO leaderboard_entries(username, total_bonus_earned, league, month_year)
-VALUES ('Игрок_A', 2500, 'GOLD', '2026-06'),
-       ('Игрок_B', 1800, 'SILVER', '2026-06'),
-       ('Игрок_C', 1200, 'BRONZE', '2026-06');
+
