@@ -1,0 +1,25 @@
+jwt:
+  secret: "c3VwZXItbG9uZy1zZWNyZXQta2V5LWZvci1zcHJpbmctYm9vdC1qd3QtYXV0aC1rZXk="
+  expiration: 86400000
+server:
+  port: 8080
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  application:
+    name: GameTask
+  spring:
+   jpa:
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true
+
+
+
