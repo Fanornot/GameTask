@@ -37,10 +37,12 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable()) // Отключаем CSRF для REST API
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Включаем наш CORS
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/auth/**",
+                                "/", "/api/auth/**",
+                                "/", "/index.html", "/static/**", "/*.js", "/*.css", "/*.json", "/favicon.ico",
                                 "/h2-console/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
@@ -48,6 +50,7 @@ public class SecurityConfig {
                                 "/v3/api-docs/**"
                         ).permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/admin/**").hasRole("CLIENT")
                         .requestMatchers("/api/marketing/**").hasAnyRole("MARKETING", "ADMIN")
                         .requestMatchers("/api/analyst/**").hasAnyRole("MARKETING_ANALYST", "MARKETING", "ADMIN")
                         .anyRequest().authenticated()

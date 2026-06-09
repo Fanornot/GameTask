@@ -3,7 +3,7 @@
     --red-bright: #ff1744;
     --red-dark: #8b0000;
     --red-glow: #ff4757;
-    --gold: #ffd700;
+    --gold: #0f4dc6;
     --orion: #00ff88;
     --bg-dark: #0a0505;
     --bg-panel: rgba(30, 10, 15, 0.85);
@@ -572,7 +572,7 @@ h2 {
 }
 /* === КАЗИНО СКС === */
 .casino-wrapper {
-    max-width: 600px;
+    max-width: 400px;
     margin: 0 auto;
     text-align: center;
 }
@@ -649,7 +649,6 @@ h2 {
 
 .roulette-segment {
     position: absolute;
-    width: 50%;
     height: 50%;
     top: 0;
     left: 50%;

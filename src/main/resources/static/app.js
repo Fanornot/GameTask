@@ -1,7 +1,6 @@
-// ============ НАСТРОЙКИ API ============
-// ВАЖНО: Замени на свой IP для WiFi доступа!
-const API_BASE = 'http://localhost:8080/api';
-// const API_BASE = 'http://192.168.1.45:8080/api'; // Раскомментируй для WiFi
+//НАСТРОЙКИ API
+//const API_BASE = 'http://localhost:8080/api';
+const API_BASE = 'http://10.161.125.104:8080/api';
 
 let currentRotation = 0;
 let isSpinning = false;
@@ -39,7 +38,7 @@ async function apiFetch(endpoint, options = {}) {
     }
 }
 
-// ============ ИНИЦИАЛИЗАЦИЯ ============
+//ИНИЦИАЛИЗАЦИЯ
 function initApp() {
     if (localStorage.getItem('sks_token')) {
         showApp();
@@ -64,7 +63,7 @@ function initApp() {
     }
 }
 
-// ============ АВТОРИЗАЦИЯ ============
+//АВТОРИЗАЦИЯ
 function switchAuthTab(tab) {
     document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
@@ -161,7 +160,7 @@ function switchRole(role) {
     });
 }
 
-// ============ ДАННЫЕ ПОЛЬЗОВАТЕЛЯ (ВАЛЮТА: ОРИОНЫ 🌌) ============
+//ДАННЫЕ ПОЛЬЗОВАТЕЛЯ ВАЛЮТА: ОРИОНЫ
 async function loadUserData() {
     try {
         const user = await apiFetch('/users/me');
@@ -174,7 +173,7 @@ async function loadUserData() {
     }
 }
 
-// ============ ЕЖЕДНЕВНАЯ НАГРАДА ============
+//ЕЖЕДНЕВНАЯ НАГРАДА
 function renderDaily() {
     const grid = document.getElementById('dailyGrid');
     grid.innerHTML = '';
@@ -220,7 +219,7 @@ async function handleBuyFreeze() {
     }
 }
 
-// ============ КАЗИНО (бывшее Колесо Фортуны) ============
+//КАЗИНО
 async function handleSpin(isFree) {
     if (isSpinning) return;
     isSpinning = true;
@@ -233,11 +232,11 @@ async function handleSpin(isFree) {
         try {
             const res = await apiFetch(`/wheel/spin?free=${isFree}`, { method: 'POST' });
             showToast('legendary', '🎰 ДЖЕКПОТ!', res.rewardDescription, '💰');
-            spawnCollectRing(wheel);
             await loadUserData();
         } catch (e) {
             showToast('error', 'Ошибка', e.message, '❌');
         }
+
         isSpinning = false;
         wheel.style.transition = 'none';
         wheel.style.transform = 'rotate(0deg)';
@@ -264,7 +263,7 @@ async function showProbabilities() {
     }
 }
 
-// ============ КАТАЛОГ ПРИЗОВ (ВАЛЮТА: ОРИОНЫ) ============
+//КАТАЛОГ ПРИЗОВ
 async function renderMarketplace() {
     const grid = document.getElementById('marketplaceGrid');
     grid.innerHTML = '<div style="text-align:center; color:#888;">Загрузка...</div>';
@@ -279,7 +278,7 @@ async function renderMarketplace() {
             const card = document.createElement('div');
             card.className = 'prize-card';
             card.innerHTML = `
-                <div class="prize-icon">${prize.imageUrl || '🎁'}</div>
+                <div class="prize-icon">${'🎁'}</div>
                 <h3>${prize.name}</h3>
                 <div style="font-size:0.8rem; color:#888; margin: 0.5rem 0;">${prize.description || ''}</div>
                 <div class="prize-cost">${prize.cost} 🌌</div>
@@ -308,7 +307,7 @@ async function purchasePrize(id) {
     }
 }
 
-// ============ КВЕСТЫ ============
+//КВЕСТЫ
 async function renderQuests() {
     const list = document.getElementById('questList');
     list.innerHTML = '<div style="text-align:center; color:#888;">Загрузка...</div>';
@@ -370,7 +369,7 @@ async function handleCreateQuest() {
     }
 }
 
-// ============ ДОСТИЖЕНИЯ ============
+//ДОСТИЖЕНИЯ
 async function renderAchievements() {
     const grid = document.getElementById('achievementsGrid');
     try {
@@ -391,7 +390,7 @@ async function renderAchievements() {
     }
 }
 
-// ============ ЛИДЕРБОРД (ПУСТОЙ, ЗАПОЛНЯЕТСЯ АВТОМАТИЧЕСКИ) ============
+//ЛИДЕРБОРД (ПУСТОЙ, ЗАПОЛНЯЕТСЯ АВТОМАТИЧЕСКИ)
 async function renderLeaderboard() {
     const list = document.getElementById('leaderboardList');
     try {
@@ -432,7 +431,7 @@ async function renderLeaderboard() {
     }
 }
 
-// ============ НАВИГАЦИЯ ============
+//НАВИГАЦИЯ
 function setupNavigation() {
     document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -444,7 +443,7 @@ function setupNavigation() {
     });
 }
 
-// ============ УТИЛИТЫ ============
+//УТИЛИТЫ
 function showToast(type, title, message, icon) {
     const container = document.getElementById('toastContainer');
     const toast = document.createElement('div');

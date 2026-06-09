@@ -47,9 +47,9 @@ public class AuthService {
                 .orElseThrow(() -> new BusinessLogicException("Роль CLIENT не найдена в БД"));
 
         User user = User.builder()
-                .username(request.getUsername())
+                .username(request.getUsername().trim())
                 .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword()))
+                .password(passwordEncoder.encode(request.getPassword().trim()))
                 .bonusBalance(0)
                 .loyaltyStatus("NEW")
                 .consentGiven(true)
@@ -63,7 +63,8 @@ public class AuthService {
 
     public AuthResponse login(LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+                new UsernamePasswordAuthenticationToken(request.getUsername().
+                        trim(), request.getPassword().trim())
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String username = authentication.getName();
